@@ -1,9 +1,14 @@
 package com.suyu.websocket.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.suyu.websocket.server.Message;
 import com.suyu.websocket.server.SocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -60,10 +65,11 @@ public class WebSocketController {
      * 推送给所有在线用户
      * @return
      */
-    @RequestMapping("sendAll")
+
+    @RequestMapping("/sendAll")
     @ResponseBody
-    public String sendAll(String msg){
-        SocketServer.sendAll(msg);
+    public String sendAll(@RequestBody  Message message){
+        SocketServer.sendAll(JSON.toJSONString(message));
         return "success";
     }
 

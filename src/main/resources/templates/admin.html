@@ -123,11 +123,11 @@
 		   var msg = $("#msg").val();
 		   if(msg!=null){
                $.ajax({
-                   method: 'get',
+                   type: "post",
+                   dataType: "json",
+                   contentType: "application/json;charset=UTF-8",
                    url: '/sendAll',
-                   data:{
-                       msg:msg
-                   },
+                   data:JSON.stringify({name:msg}),
                    success:function(data) {
                        var content = $("#content").html();
                        $("#content").html(content+'<div style="margin-bottom: 8px">\n' +
@@ -144,11 +144,11 @@
 
        function connect(){
                if ('WebSocket' in window){
-                   ws = new WebSocket("ws://www.niezhiliang.com:8086/socketServer/niezhiliang9595");
+                   ws = new WebSocket("ws://10.118.1.90:8086/socketServer/niezhiliang9595");
                    //ws = new WebSocket("ws://127.0.0.1:8086/socketServer/niezhiliang9595");
                }
                else if ('MozWebSocket' in window){
-                   ws = new MozWebSocket("ws://www.niezhiliang.com:8086/socketServer/niezhiliang9595");
+                   ws = new MozWebSocket("ws://10.118.1.90:8086/socketServer/niezhiliang9595");
                    //ws = new MozWebSocket("ws://127.0.0.1:8086/socketServer/niezhiliang9595");
                }
                else{
