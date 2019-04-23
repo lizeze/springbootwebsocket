@@ -6,6 +6,7 @@ import com.suyu.websocket.server.SocketServer;
 import com.suyu.websocket.service.IPushMessageService;
 import com.suyu.websocket.service.IUserService;
 import com.suyu.websocket.vo.Message;
+import com.suyu.websocket.vo.SocketBody;
 import com.suyu.websocket.vo.SocketResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -104,19 +105,33 @@ public class WebSocketController {
     @ResponseBody
     public ResponseEntity<?> sendAll() throws Exception {
 
-        String appId = request.getHeader("Authorization");
-        if (!validity(appId))
+
+        if (!validity())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("NO FORBIDDEN");
         List<Message> messageList = new ArrayList<>();
 //        SocketServer.sendAll(JSON.toJSONString(socketResult));
-        return ResponseEntity.status(HttpStatus.OK).body(appId);
+        return ResponseEntity.status(HttpStatus.OK).body("success");
     }
-
-
-    private boolean validity(String appId) throws Exception {
+    private boolean validity() throws Exception {
+        String appId = request.getHeader("Authorization");
         if (appId == null) return false;
         User user = userService.fidnByAppId(appId);
         if (user == null) return false;
         return user.getIsEnable() == 1;
+    }
+    @RequestMapping("/push")
+    @ResponseBody
+    public ResponseEntity<?> pushMessage(@RequestBody SocketBody socketBody) throws Exception {
+
+        if (socketBody == null || socketBody.getUserCode().length() <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
+        }
+        if (!validity())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("NO FORBIDDEN");
+        String[] persons = socketBody.getUserCode().split(",");
+        SocketServer.SendMany(socketBody.getMessage(), persons);
+
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
+
     }
 }

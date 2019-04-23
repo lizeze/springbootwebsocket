@@ -6,4 +6,4 @@
  *@Description:
  */
 
-var url = "ws://10.118.1.90:8086/socketServer/"
+var url = "ws://127.0.0.1:8086/socketServer/"
